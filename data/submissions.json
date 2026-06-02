@@ -1,13 +1,1 @@
-[
-  {
-    "id": "sub_1780389815785_hq9bz7",
-    "createdAt": "2026-06-02T08:43:35.785Z",
-    "email": "test@example.com",
-    "ideaOne": "TEST DEPLOIEMENT - Un SaaS B2B pour aider les restaurants à relancer leurs clients inactifs automatiquement.",
-    "ideaTwo": "TEST DEPLOIEMENT - Un outil pour aider les agences à qualifier les prospects avant le premier appel.",
-    "submittedAt": "Test déploiement Vercel - 2026-06-02",
-    "summary": "Soumission test créée par Lowkey pour vérifier le stockage GitHub.",
-    "nextStep": "Vérifier que cette soumission apparaît dans le panel admin.",
-    "structuredMessage": "TEST DEPLOIEMENT VERCEL - stockage GitHub + panel admin."
-  }
-]
+[]
