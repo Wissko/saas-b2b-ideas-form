@@ -25,6 +25,15 @@ Puis ouvrir `http://localhost:3000`.
 
 Le formulaire envoie les données à `Wissem.sghaier.ws@gmail.com` via FormSubmit. Au premier envoi réel, FormSubmit peut envoyer un email de confirmation à accepter pour activer la réception.
 
+L’email contient :
+
+- le contact éventuel
+- la date d’envoi
+- un résumé automatique des deux idées
+- les deux idées séparées et lisibles
+- une lecture rapide avec la longueur de chaque idée
+- une prochaine étape recommandée pour comparer les pistes
+
 ## Vérifier
 
 ```bash

@@ -59,10 +59,14 @@
           method="POST"
           novalidate
         >
-          <input type="hidden" name="_subject" value="Nouvelles idées SaaS B2B" />
+          <input type="hidden" name="_subject" value="Nouvelle soumission - Idées SaaS B2B" />
           <input type="hidden" name="_template" value="table" />
           <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="source" value="saas-b2b-ideas-form" />
+          <input type="hidden" name="Source" value="saas-b2b-ideas-form" />
+          <input type="hidden" id="submittedAt" name="Date d’envoi" />
+          <input type="hidden" id="summaryField" name="Résumé automatique" />
+          <input type="hidden" id="nextStepField" name="Prochaine étape recommandée" />
+          <input type="hidden" id="structuredMessageField" name="Message structuré" />
 
           <div class="form-header" id="ideas">
             <p class="eyebrow">Exercice</p>
@@ -76,7 +80,7 @@
             <label for="contactEmail">Email pour te recontacter</label>
             <input
               id="contactEmail"
-              name="email"
+              name="Email de contact"
               type="email"
               autocomplete="email"
               placeholder="exemple@entreprise.com"
@@ -88,7 +92,7 @@
             <label for="ideaOne">Idée SaaS B2B n°1</label>
             <textarea
               id="ideaOne"
-              name="ideaOne"
+              name="Idée SaaS B2B n°1"
               rows="6"
               minlength="20"
               required
@@ -101,7 +105,7 @@
             <label for="ideaTwo">Idée SaaS B2B n°2</label>
             <textarea
               id="ideaTwo"
-              name="ideaTwo"
+              name="Idée SaaS B2B n°2"
               rows="6"
               minlength="20"
               required
