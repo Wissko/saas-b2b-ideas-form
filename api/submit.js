@@ -52,9 +52,10 @@ const githubRequest = async ({ method = 'GET', url, token, body }) => {
 
 const decodeBase64 = (value = '') => Buffer.from(value, 'base64').toString('utf8');
 const encodeBase64 = (value = '') => Buffer.from(value, 'utf8').toString('base64');
+const encodeGitHubPath = (path) => path.split('/').map(encodeURIComponent).join('/');
 
 const readSubmissionsFile = async ({ repo, path, branch, token }) => {
-  const url = `https://api.github.com/repos/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+  const url = `https://api.github.com/repos/${repo}/contents/${encodeGitHubPath(path)}?ref=${encodeURIComponent(branch)}`;
   const { response, payload } = await githubRequest({ url, token });
 
   if (response.status === 404) {
@@ -70,7 +71,7 @@ const readSubmissionsFile = async ({ repo, path, branch, token }) => {
 };
 
 const writeSubmissionsFile = async ({ repo, path, branch, token, submissions, sha }) => {
-  const url = `https://api.github.com/repos/${repo}/contents/${encodeURIComponent(path)}`;
+  const url = `https://api.github.com/repos/${repo}/contents/${encodeGitHubPath(path)}`;
   const message = `Save SaaS idea submission ${new Date().toISOString()}`;
   const body = {
     message,
