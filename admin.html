@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Panel privé pour consulter, filtrer et exporter les idées SaaS B2B reçues." />
+    <meta name="robots" content="noindex, nofollow" />
     <title>Admin - Idées SaaS B2B</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -802,6 +803,7 @@
           }
 
           allSubmissions = payload.submissions || [];
+          passwordInput.value = '';
           searchInput.value = '';
           updateStats(allSubmissions);
           setControlsEnabled(true);
