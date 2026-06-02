@@ -23,7 +23,15 @@ Puis ouvrir `http://localhost:3000`.
 
 ## Réception des soumissions
 
-Le formulaire envoie les données à `Wissem.sghaier.ws@gmail.com` via FormSubmit. Au premier envoi réel, FormSubmit peut envoyer un email de confirmation à accepter pour activer la réception.
+Le formulaire essaie d’abord d’envoyer les données via la route backend `/api/submit` avec Resend. Si l’API n’est pas disponible, il ouvre automatiquement un email pré-rempli en fallback vers `Wissem.sghaier.ws@gmail.com`, afin de ne pas perdre les informations.
+
+Variables d’environnement à configurer en production pour l’envoi automatique :
+
+```bash
+RESEND_API_KEY=...
+RESEND_FROM="SaaS B2B Ideas <adresse@domaine-verifie.com>"
+SUBMISSION_TO_EMAIL="Wissem.sghaier.ws@gmail.com"
+```
 
 L’email contient :
 

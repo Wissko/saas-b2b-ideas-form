@@ -8,6 +8,7 @@ const nextStepField = document.querySelector('#nextStepField');
 const structuredMessageField = document.querySelector('#structuredMessageField');
 const submitButton = form.querySelector('button[type="submit"]');
 const storageKey = 'saas-b2b-ideas';
+const fallbackEmail = 'Wissem.sghaier.ws@gmail.com';
 
 let savedIdeas = null;
 
@@ -80,6 +81,26 @@ Prochaine étape recommandée
 ${nextStep}
 `.trim();
 
+const openMailFallback = ({ structuredMessage }) => {
+  const subject = encodeURIComponent('Nouvelle soumission - Idées SaaS B2B');
+  const body = encodeURIComponent(structuredMessage);
+  window.location.href = `mailto:${fallbackEmail}?subject=${subject}&body=${body}`;
+};
+
+const sendSubmission = async (payload) => {
+  const response = await fetch('/api/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error('Submission API unavailable');
+  }
+
+  return response.json();
+};
+
 [...fields, contactEmail].forEach((field) => {
   field.addEventListener('input', () => {
     field.classList.remove('is-invalid');
@@ -87,7 +108,7 @@ ${nextStep}
   });
 });
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const ideas = fields.map((field) => cleanText(field.value));
@@ -115,6 +136,15 @@ form.addEventListener('submit', (event) => {
   const summary = buildSummary(ideas);
   const nextStep = buildNextStep(ideas);
   const structuredMessage = buildStructuredMessage({ email, ideas, submittedAt, summary, nextStep });
+  const payload = {
+    email,
+    ideaOne: ideas[0],
+    ideaTwo: ideas[1],
+    submittedAt,
+    summary,
+    nextStep,
+    structuredMessage,
+  };
 
   submittedAtField.value = submittedAt;
   summaryField.value = summary;
@@ -124,16 +154,21 @@ form.addEventListener('submit', (event) => {
   localStorage.setItem(
     storageKey,
     JSON.stringify({
-      ideaOne: ideas[0],
-      ideaTwo: ideas[1],
-      email,
-      summary,
-      nextStep,
+      ...payload,
       savedAt: new Date().toISOString(),
     })
   );
 
   submitButton.disabled = true;
-  setFeedback('Envoi en cours. L’email contiendra un résumé, les deux idées et une prochaine étape claire.');
-  form.submit();
+  setFeedback('Envoi en cours. Une copie locale est sauvegardée.');
+
+  try {
+    await sendSubmission(payload);
+    setFeedback('Idées envoyées. L’email contient le résumé, les deux idées et la prochaine étape.');
+  } catch {
+    setFeedback('Service email indisponible ici. Ouverture d’un email pré-rempli pour ne pas perdre les infos.', 'error');
+    openMailFallback({ structuredMessage });
+  } finally {
+    submitButton.disabled = false;
+  }
 });
