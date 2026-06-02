@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "sub_1780390104824_6th500",
+    "createdAt": "2026-06-02T08:48:24.824Z",
+    "email": "test-reel-lowkey@example.com",
+    "ideaOne": "TEST REEL - Un SaaS B2B qui aide les restaurants à relancer automatiquement les clients inactifs avec des offres personnalisées.",
+    "ideaTwo": "TEST REEL - Une plateforme qui aide les agences à qualifier leurs prospects B2B avant le premier appel commercial.",
+    "submittedAt": "Test réel Lowkey - mardi 2 juin 2026 à 08:48 UTC",
+    "summary": "Test réel de soumission : deux idées fictives envoyées pour vérifier le stockage GitHub et le panel admin.",
+    "nextStep": "Ouvrir le panel admin et vérifier que cette soumission TEST REEL apparaît en première position.",
+    "structuredMessage": "TEST REEL LOWKEY\n\nIdée 1 : restaurant relance clients inactifs.\nIdée 2 : qualification prospects B2B pour agences.\n\nObjectif : vérifier le stockage GitHub + panel admin."
+  }
+]
