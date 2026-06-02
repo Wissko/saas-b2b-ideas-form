@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Panel privé pour consulter, filtrer et exporter les idées SaaS B2B reçues." />
     <title>Admin - Idées SaaS B2B</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,141 +13,566 @@
     />
     <link rel="stylesheet" href="styles.css" />
     <style>
+      :root {
+        --admin-ink: #17140f;
+        --admin-muted: #514a40;
+        --admin-hairline: rgba(23, 20, 15, 0.16);
+        --admin-hairline-strong: rgba(23, 20, 15, 0.3);
+        --admin-surface: rgba(255, 251, 242, 0.84);
+        --admin-surface-solid: #fff9ef;
+        --admin-dark: #1b1813;
+      }
+
+      body {
+        background:
+          linear-gradient(90deg, rgba(20, 19, 15, 0.04) 1px, transparent 1px) 0 0 / 76px 76px,
+          radial-gradient(circle at 88% 9%, rgba(143, 79, 42, 0.15), transparent 28rem),
+          radial-gradient(circle at 8% 92%, rgba(217, 163, 111, 0.18), transparent 34rem),
+          linear-gradient(145deg, #fbf8f0 0%, #f2eadc 54%, #e7dcc9 100%);
+      }
+
       .admin-shell {
-        width: min(1120px, calc(100% - 32px));
+        width: min(1280px, calc(100% - 40px));
         margin: 0 auto;
-        padding: clamp(2rem, 5vw, 4.5rem) 0;
+        padding: clamp(1.25rem, 3vw, 2rem) 0 clamp(2.5rem, 6vw, 5.5rem);
       }
 
-      .admin-header {
-        display: grid;
+      .admin-topbar {
+        display: flex;
+        justify-content: space-between;
         gap: 1rem;
-        margin-bottom: 2rem;
-        padding-bottom: 1.2rem;
-        border-bottom: 1px solid var(--line);
+        align-items: center;
+        padding: 0.85rem 0 1.1rem;
+        border-bottom: 1px solid var(--admin-hairline);
+        color: var(--admin-muted);
+        font-size: 0.82rem;
+        font-weight: 680;
+        letter-spacing: 0.02em;
       }
 
-      .admin-header h1 {
-        max-width: 11ch;
-        margin: 0;
-        font-size: clamp(3rem, 8vw, 6.8rem);
+      .admin-topbar a {
+        color: var(--admin-ink);
+        text-decoration-color: rgba(23, 20, 15, 0.22);
+        text-underline-offset: 0.22em;
       }
 
-      .admin-login,
-      .submission-card {
-        border: 1px solid var(--line);
-        border-radius: 1.6rem;
-        background: rgba(251, 247, 239, 0.94);
-        box-shadow: var(--shadow);
-      }
-
-      .admin-login {
+      .admin-hero {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 0.9rem;
+        grid-template-columns: minmax(0, 1fr) minmax(23rem, 0.42fr);
+        gap: clamp(1.4rem, 4vw, 3.4rem);
         align-items: end;
-        padding: 1rem;
-        margin-bottom: 1.3rem;
+        padding: clamp(2.2rem, 6vw, 5.2rem) 0 clamp(1.7rem, 4vw, 3rem);
       }
 
-      .admin-login label {
+      .admin-hero h1 {
+        max-width: 12ch;
+        margin-bottom: 1.05rem;
+        font-size: clamp(3.3rem, 8.2vw, 7.6rem);
+        line-height: 0.88;
+      }
+
+      .admin-hero .intro {
+        max-width: 48rem;
+      }
+
+      .admin-brief {
+        position: relative;
+        padding: 1.15rem;
+        border: 1px solid var(--admin-hairline-strong);
+        border-radius: 1.15rem 1.15rem 2.5rem 1.15rem;
+        background: var(--admin-dark);
+        color: #f7ead7;
+        box-shadow: 0 28px 70px rgba(79, 57, 31, 0.18);
+      }
+
+      .admin-brief::before {
+        position: absolute;
+        inset: 0.55rem;
+        content: "";
+        border: 1px solid rgba(247, 234, 215, 0.13);
+        border-radius: 0.72rem 0.72rem 1.95rem 0.72rem;
+        pointer-events: none;
+      }
+
+      .admin-brief p {
+        position: relative;
+        margin: 0;
+        color: rgba(247, 234, 215, 0.82);
+        font-size: 0.95rem;
+        font-weight: 560;
+        line-height: 1.58;
+      }
+
+      .admin-brief strong {
+        display: block;
+        margin-bottom: 2.7rem;
+        color: var(--accent-soft);
+        font-size: 0.75rem;
+        font-weight: 760;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .admin-card,
+      .submission-card,
+      .empty-state,
+      .skeleton-card {
+        border: 1px solid var(--admin-hairline);
+        background: var(--admin-surface);
+        box-shadow: 0 24px 70px rgba(82, 62, 36, 0.12);
+      }
+
+      .admin-card {
+        padding: clamp(1rem, 2.2vw, 1.45rem);
+        border-radius: 1.45rem;
+      }
+
+      .login-panel {
+        display: grid;
+        grid-template-columns: minmax(16rem, 1fr) auto;
+        gap: 0.85rem;
+        align-items: end;
+        margin-bottom: 1rem;
+      }
+
+      .login-panel label,
+      .filter-panel label {
         margin: 0;
       }
 
-      .admin-login button {
+      .admin-actions,
+      .list-actions,
+      .card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        align-items: center;
+      }
+
+      .admin-button,
+      .admin-secondary,
+      .copy-button {
         width: auto;
-        min-height: 3.45rem;
-        padding-inline: 1.5rem;
+        min-height: 3rem;
+        margin: 0;
+        border-radius: 0.85rem;
+        padding: 0.95rem 1.05rem;
+        font-size: 0.92rem;
+        white-space: nowrap;
+      }
+
+      .admin-secondary,
+      .copy-button {
+        border: 1px solid var(--admin-hairline-strong);
+        color: var(--admin-ink);
+        background: rgba(255, 253, 248, 0.92);
+        box-shadow: 0 8px 22px rgba(82, 62, 36, 0.08);
+      }
+
+      .copy-button {
+        border-color: rgba(143, 79, 42, 0.46);
+        color: var(--accent);
+        font-weight: 780;
+      }
+
+      .admin-secondary:hover,
+      .copy-button:hover {
+        color: #fff8ec;
+        background: var(--accent);
+      }
+
+      .admin-secondary:disabled {
+        border-color: rgba(23, 20, 15, 0.14);
+        color: rgba(81, 74, 64, 0.58);
+        background: rgba(255, 253, 248, 0.5);
+        box-shadow: none;
+        cursor: not-allowed;
       }
 
       .admin-status {
-        min-height: 1.4rem;
-        color: var(--muted);
-        font-weight: 650;
+        min-height: 1.35rem;
+        margin: 0.85rem 0 0;
+        color: var(--admin-muted);
+        font-size: 0.93rem;
+        font-weight: 680;
+        line-height: 1.45;
+      }
+
+      .admin-status.is-error {
+        color: #9b2f24;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+        margin: 1rem 0;
+      }
+
+      .stat-card {
+        min-height: 8.6rem;
+        padding: 1rem;
+        border: 1px solid var(--admin-hairline);
+        border-radius: 1.15rem;
+        background: rgba(255, 253, 248, 0.58);
+      }
+
+      .stat-card span {
+        display: block;
+        color: var(--admin-muted);
+        font-size: 0.75rem;
+        font-weight: 780;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+
+      .stat-card strong {
+        display: block;
+        margin-top: 1.2rem;
+        color: var(--admin-ink);
+        font-size: clamp(1.8rem, 4vw, 3.15rem);
+        font-weight: 760;
+        letter-spacing: -0.06em;
+        line-height: 0.95;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .filter-panel {
+        display: grid;
+        grid-template-columns: minmax(16rem, 1fr) auto;
+        gap: 0.85rem;
+        align-items: end;
+        margin-top: 1rem;
+      }
+
+      .filter-panel input {
+        padding-left: 1rem;
+      }
+
+      .list-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: end;
+        margin: clamp(1.6rem, 4vw, 2.8rem) 0 1rem;
+      }
+
+      .list-header h2 {
+        margin: 0.25rem 0 0;
+        font-size: clamp(2rem, 4.6vw, 4.1rem);
+      }
+
+      .result-count {
+        color: var(--admin-muted);
+        font-size: 0.9rem;
+        font-weight: 720;
       }
 
       .submission-list {
         display: grid;
-        gap: 1rem;
-        margin-top: 1.2rem;
+        gap: 0.9rem;
       }
 
       .submission-card {
-        padding: clamp(1.1rem, 3vw, 1.6rem);
+        display: grid;
+        grid-template-columns: minmax(0, 0.8fr) minmax(18rem, 1.2fr);
+        gap: clamp(1rem, 2.5vw, 1.8rem);
+        padding: clamp(1rem, 2.4vw, 1.45rem);
+        border-radius: 1.35rem;
       }
 
-      .submission-meta {
+      .submission-side {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.55rem;
-        margin-bottom: 1rem;
-        color: var(--muted);
-        font-size: 0.88rem;
-        font-weight: 650;
+        flex-direction: column;
+        gap: 1rem;
+        min-width: 0;
       }
 
-      .submission-card h2 {
-        margin-bottom: 0.75rem;
-        font-size: clamp(1.7rem, 4vw, 2.6rem);
+      .submission-index {
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 790;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-variant-numeric: tabular-nums;
       }
 
       .submission-card h3 {
-        margin: 1.1rem 0 0.45rem;
+        margin: 0;
+        color: var(--admin-ink);
+        font-size: clamp(1.45rem, 2.6vw, 2.35rem);
+        line-height: 1;
+        letter-spacing: -0.045em;
+        text-wrap: balance;
+      }
+
+      .summary-text {
+        margin: 0;
+        color: var(--ink-soft);
+        font-size: 1rem;
+        font-weight: 560;
+        line-height: 1.58;
+        text-wrap: pretty;
+      }
+
+      .meta-grid {
+        display: grid;
+        gap: 0.48rem;
+        padding-top: 0.2rem;
+        color: var(--admin-muted);
+        font-size: 0.88rem;
+        font-weight: 640;
+        line-height: 1.35;
+      }
+
+      .meta-grid a {
+        color: var(--admin-ink);
+        overflow-wrap: anywhere;
+      }
+
+      .submission-main {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .field-block {
+        padding: 0.95rem 1rem;
+        border: 1px solid var(--admin-hairline);
+        border-radius: 1rem;
+        background: rgba(255, 253, 248, 0.58);
+      }
+
+      .field-block span {
+        display: block;
+        margin-bottom: 0.42rem;
         color: var(--accent);
-        font-size: 0.78rem;
-        letter-spacing: 0.12em;
+        font-size: 0.71rem;
+        font-weight: 790;
+        letter-spacing: 0.13em;
         text-transform: uppercase;
       }
 
-      .submission-card p {
-        margin-bottom: 0;
+      .field-block p {
+        margin: 0;
         color: var(--ink-soft);
+        font-size: 0.96rem;
         line-height: 1.58;
+        white-space: pre-wrap;
       }
 
       .empty-state {
-        padding: 1.2rem;
-        border: 1px dashed var(--line-strong);
-        border-radius: 1.2rem;
-        color: var(--muted);
+        padding: clamp(1.15rem, 3vw, 1.8rem);
+        border-style: dashed;
+        border-radius: 1.35rem;
+        color: var(--admin-muted);
       }
 
-      @media (max-width: 620px) {
-        .admin-login {
+      .empty-state h3 {
+        margin: 0 0 0.45rem;
+        color: var(--admin-ink);
+        font-size: 1.35rem;
+        letter-spacing: -0.03em;
+      }
+
+      .empty-state p {
+        max-width: 42rem;
+        margin: 0;
+        color: var(--admin-muted);
+        line-height: 1.55;
+      }
+
+      .skeleton-card {
+        height: 13rem;
+        overflow: hidden;
+        border-radius: 1.35rem;
+        background:
+          linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent),
+          rgba(255, 251, 242, 0.72);
+        background-size: 220% 100%, auto;
+        animation: adminShimmer 1.25s ease-in-out infinite;
+      }
+
+      @keyframes adminShimmer {
+        0% { background-position: 120% 0, 0 0; }
+        100% { background-position: -120% 0, 0 0; }
+      }
+
+      @media (max-width: 900px) {
+        .admin-hero,
+        .submission-card {
           grid-template-columns: 1fr;
         }
 
-        .admin-login button {
+        .admin-brief {
+          max-width: 34rem;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .admin-shell {
+          width: min(100% - 28px, 1280px);
+        }
+
+        .admin-topbar,
+        .list-header {
+          display: grid;
+          align-items: start;
+        }
+
+        .admin-hero {
+          padding: 1.55rem 0 1rem;
+          gap: 1rem;
+        }
+
+        .admin-hero h1 {
+          max-width: 12ch;
+          margin-bottom: 0.75rem;
+          font-size: clamp(2.55rem, 11.8vw, 3.9rem);
+          line-height: 0.94;
+        }
+
+        .admin-hero .intro {
+          font-size: 0.98rem;
+          line-height: 1.55;
+        }
+
+        .admin-brief {
+          padding: 1rem;
+          border-radius: 1rem 1rem 1.7rem 1rem;
+        }
+
+        .admin-brief strong {
+          margin-bottom: 1.15rem;
+        }
+
+        .login-panel,
+        .filter-panel,
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .admin-actions,
+        .list-actions,
+        .card-actions {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .admin-button,
+        .admin-secondary,
+        .copy-button {
           width: 100%;
+        }
+
+        .stat-card {
+          min-height: auto;
+          padding: 0.85rem;
+        }
+
+        .stat-card strong {
+          margin-top: 0.7rem;
+        }
+
+        .list-header {
+          margin-top: 1.45rem;
         }
       }
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#submissions">Aller aux soumissions</a>
     <main class="admin-shell">
-      <header class="admin-header">
-        <p class="eyebrow">Panel admin</p>
-        <h1>Idées reçues.</h1>
-        <p class="intro">Connecte-toi avec le mot de passe admin pour lire les soumissions stockées dans GitHub.</p>
+      <nav class="admin-topbar" aria-label="Navigation admin">
+        <span>Panel privé · SaaS B2B Ideas</span>
+        <a href="/">Retour au formulaire public</a>
+      </nav>
+
+      <header class="admin-hero">
+        <div>
+          <p class="eyebrow">Admin</p>
+          <h1>Pipeline idées.</h1>
+          <p class="intro">
+            Une vue de travail pour lire vite, retrouver une soumission, copier un brief propre et exporter les retours pour l’équipe.
+          </p>
+        </div>
+        <aside class="admin-brief" aria-label="Méthode de traitement">
+          <strong>Lecture rapide</strong>
+          <p>Commence par le résumé, compare les deux pistes, puis utilise la prochaine étape pour décider quoi creuser avec Yose et ses associés.</p>
+        </aside>
       </header>
 
-      <section class="admin-login" aria-label="Connexion admin">
-        <label for="adminPassword">
-          Mot de passe admin
-          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Mot de passe" />
-        </label>
-        <button id="loadSubmissions" type="button">Afficher</button>
+      <section class="admin-card" aria-label="Connexion et synthèse">
+        <div class="login-panel">
+          <label for="adminPassword">
+            Mot de passe admin
+            <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Mot de passe" />
+          </label>
+          <div class="admin-actions">
+            <button class="admin-button" id="loadSubmissions" type="button">Charger les soumissions</button>
+            <button class="admin-secondary" id="clearPassword" type="button">Effacer</button>
+          </div>
+        </div>
+        <p class="admin-status" id="adminStatus" role="status" aria-live="polite">Entre le mot de passe pour initialiser le panel.</p>
+
+        <section class="stats-grid" aria-label="Synthèse des soumissions">
+          <article class="stat-card">
+            <span>Total</span>
+            <strong id="totalStat">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Dernière soumission</span>
+            <strong id="latestStat">—</strong>
+          </article>
+          <article class="stat-card">
+            <span>Avec email</span>
+            <strong id="emailStat">0</strong>
+          </article>
+        </section>
+
+        <div class="filter-panel">
+          <label for="submissionSearch">
+            Rechercher
+            <input id="submissionSearch" type="search" placeholder="Email, résumé, idée, secteur..." disabled />
+          </label>
+          <div class="admin-actions">
+            <button class="admin-secondary" id="resetSearch" type="button" disabled>Réinitialiser</button>
+            <button class="admin-secondary" id="exportCsv" type="button" disabled>Exporter CSV</button>
+          </div>
+        </div>
       </section>
 
-      <p class="admin-status" id="adminStatus" role="status" aria-live="polite"></p>
-      <section class="submission-list" id="submissionList" aria-label="Soumissions"></section>
+      <section class="list-header" id="submissions" aria-label="En-tête de liste">
+        <div>
+          <p class="eyebrow">Soumissions</p>
+          <h2>À qualifier.</h2>
+        </div>
+        <div class="result-count" id="resultCount">Aucune donnée chargée</div>
+      </section>
+
+      <section class="submission-list" id="submissionList" aria-label="Liste des soumissions">
+        <div class="empty-state">
+          <h3>Panel prêt.</h3>
+          <p>Charge les données pour afficher les idées reçues. La recherche, la copie et l’export CSV restent côté navigateur.</p>
+        </div>
+      </section>
     </main>
 
     <script>
       const passwordInput = document.querySelector('#adminPassword');
       const loadButton = document.querySelector('#loadSubmissions');
+      const clearPasswordButton = document.querySelector('#clearPassword');
       const status = document.querySelector('#adminStatus');
       const list = document.querySelector('#submissionList');
+      const searchInput = document.querySelector('#submissionSearch');
+      const resetSearchButton = document.querySelector('#resetSearch');
+      const exportCsvButton = document.querySelector('#exportCsv');
+      const totalStat = document.querySelector('#totalStat');
+      const latestStat = document.querySelector('#latestStat');
+      const emailStat = document.querySelector('#emailStat');
+      const resultCount = document.querySelector('#resultCount');
+
+      let allSubmissions = [];
+      let visibleSubmissions = [];
 
       const escapeHtml = (value = '') =>
         String(value)
@@ -156,47 +582,214 @@
           .replaceAll('"', '&quot;')
           .replaceAll("'", '&#039;');
 
+      const normalize = (value = '') =>
+        String(value)
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+
+      const getSubmissionDate = (submission) => submission.submittedAt || submission.createdAt || '';
+
+      const formatDate = (value) => {
+        if (!value) return 'Non datée';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return new Intl.DateTimeFormat('fr-FR', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }).format(date);
+      };
+
+      const getEmail = (submission) => submission.email?.trim() || '';
+
+      const buildStructuredMessage = (submission, position) =>
+        submission.structuredMessage?.trim() ||
+        [
+          `Soumission #${position}`,
+          `Date : ${formatDate(getSubmissionDate(submission))}`,
+          `Email : ${getEmail(submission) || 'Non renseigné'}`,
+          '',
+          `Résumé :\n${submission.summary || 'Non renseigné'}`,
+          '',
+          `Idée 1 :\n${submission.ideaOne || 'Non renseignée'}`,
+          '',
+          `Idée 2 :\n${submission.ideaTwo || 'Non renseignée'}`,
+          '',
+          `Prochaine étape :\n${submission.nextStep || 'Non renseignée'}`,
+        ].join('\n');
+
+      const setStatus = (message, isError = false) => {
+        status.textContent = message;
+        status.classList.toggle('is-error', isError);
+      };
+
+      const setControlsEnabled = (enabled) => {
+        searchInput.disabled = !enabled;
+        resetSearchButton.disabled = !enabled;
+        exportCsvButton.disabled = !enabled;
+      };
+
+      const updateStats = (submissions) => {
+        const total = submissions.length;
+        const withEmail = submissions.filter((submission) => getEmail(submission)).length;
+        const latest = submissions
+          .map(getSubmissionDate)
+          .filter(Boolean)
+          .map((value) => ({ value, time: new Date(value).getTime() }))
+          .sort((a, b) => (Number.isNaN(b.time) ? 0 : b.time) - (Number.isNaN(a.time) ? 0 : a.time))[0]?.value;
+
+        totalStat.textContent = total;
+        emailStat.textContent = withEmail;
+        latestStat.textContent = latest ? formatDate(latest) : '—';
+      };
+
+      const renderEmpty = (title, text) => {
+        list.innerHTML = `
+          <div class="empty-state">
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(text)}</p>
+          </div>
+        `;
+      };
+
+      const renderLoading = () => {
+        list.innerHTML = '<div class="skeleton-card" aria-label="Chargement"></div><div class="skeleton-card" aria-label="Chargement"></div>';
+      };
+
       const renderSubmissions = (submissions) => {
+        visibleSubmissions = submissions;
+        const query = searchInput.value.trim();
+        resultCount.textContent = `${submissions.length} résultat${submissions.length > 1 ? 's' : ''}${query ? ` pour « ${query} »` : ''}`;
+
+        if (!allSubmissions.length) {
+          renderEmpty('Aucune soumission.', 'Le stockage GitHub est accessible, mais aucune idée n’est encore enregistrée.');
+          return;
+        }
+
         if (!submissions.length) {
-          list.innerHTML = '<div class="empty-state">Aucune soumission pour le moment.</div>';
+          renderEmpty('Aucun résultat.', 'Essaie un autre terme de recherche ou réinitialise le filtre.');
           return;
         }
 
         list.innerHTML = submissions
-          .map(
-            (submission, index) => `
+          .map((submission) => {
+            const originalIndex = allSubmissions.indexOf(submission) + 1;
+            const email = getEmail(submission);
+            const date = getSubmissionDate(submission);
+            return `
               <article class="submission-card">
-                <div class="submission-meta">
-                  <span>#${submissions.length - index}</span>
-                  <span>${escapeHtml(submission.submittedAt || submission.createdAt || '')}</span>
-                  <span>${escapeHtml(submission.email || 'Email non renseigné')}</span>
+                <div class="submission-side">
+                  <span class="submission-index">Soumission ${originalIndex.toString().padStart(2, '0')}</span>
+                  <h3>${escapeHtml(submission.summary || 'Soumission SaaS B2B')}</h3>
+                  <p class="summary-text">${escapeHtml(submission.summary || 'Résumé non renseigné')}</p>
+                  <div class="meta-grid" aria-label="Métadonnées">
+                    <span>Date · ${escapeHtml(formatDate(date))}</span>
+                    <span>Email · ${email ? `<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>` : 'Non renseigné'}</span>
+                    <span>ID · ${escapeHtml(submission.id || 'Non renseigné')}</span>
+                  </div>
+                  <div class="card-actions">
+                    <button class="copy-button" type="button" data-copy-index="${originalIndex - 1}">Copier le brief</button>
+                  </div>
                 </div>
-                <h2>Soumission SaaS B2B</h2>
-                <h3>Résumé</h3>
-                <p>${escapeHtml(submission.summary || 'Résumé non disponible')}</p>
-                <h3>Idée n°1</h3>
-                <p>${escapeHtml(submission.ideaOne)}</p>
-                <h3>Idée n°2</h3>
-                <p>${escapeHtml(submission.ideaTwo)}</p>
-                <h3>Prochaine étape</h3>
-                <p>${escapeHtml(submission.nextStep || 'Non renseignée')}</p>
+                <div class="submission-main">
+                  <div class="field-block">
+                    <span>Idée 1</span>
+                    <p>${escapeHtml(submission.ideaOne || 'Non renseignée')}</p>
+                  </div>
+                  <div class="field-block">
+                    <span>Idée 2</span>
+                    <p>${escapeHtml(submission.ideaTwo || 'Non renseignée')}</p>
+                  </div>
+                  <div class="field-block">
+                    <span>Prochaine étape</span>
+                    <p>${escapeHtml(submission.nextStep || 'Non renseignée')}</p>
+                  </div>
+                </div>
               </article>
-            `
-          )
+            `;
+          })
           .join('');
+      };
+
+      const applySearch = () => {
+        const query = normalize(searchInput.value.trim());
+        if (!query) {
+          renderSubmissions(allSubmissions);
+          return;
+        }
+
+        renderSubmissions(
+          allSubmissions.filter((submission) =>
+            [submission.email, submission.summary, submission.ideaOne, submission.ideaTwo]
+              .map(normalize)
+              .some((value) => value.includes(query))
+          )
+        );
+      };
+
+      const copyText = async (text) => {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.append(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      };
+
+      const csvEscape = (value = '') => `"${String(value).replaceAll('"', '""')}"`;
+
+      const exportCsv = () => {
+        const source = visibleSubmissions.length || searchInput.value.trim() ? visibleSubmissions : allSubmissions;
+        if (!source.length) return;
+
+        const headers = ['id', 'date', 'email', 'summary', 'ideaOne', 'ideaTwo', 'nextStep'];
+        const rows = source.map((submission) =>
+          [
+            submission.id || '',
+            getSubmissionDate(submission),
+            getEmail(submission),
+            submission.summary || '',
+            submission.ideaOne || '',
+            submission.ideaTwo || '',
+            submission.nextStep || '',
+          ].map(csvEscape).join(',')
+        );
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([`\ufeff${csv}`], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `soumissions-saas-b2b-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        setStatus(`${source.length} soumission${source.length > 1 ? 's' : ''} exportée${source.length > 1 ? 's' : ''} en CSV.`);
       };
 
       const loadSubmissions = async () => {
         const password = passwordInput.value.trim();
 
         if (!password) {
-          status.textContent = 'Entre le mot de passe admin.';
+          setStatus('Entre le mot de passe admin.', true);
           passwordInput.focus();
           return;
         }
 
         loadButton.disabled = true;
-        status.textContent = 'Chargement des soumissions...';
+        setControlsEnabled(false);
+        setStatus('Chargement des soumissions depuis GitHub...');
+        renderLoading();
 
         try {
           const response = await fetch('/api/submit', {
@@ -208,20 +801,54 @@
             throw new Error(payload.error || 'Accès refusé');
           }
 
-          renderSubmissions(payload.submissions || []);
-          status.textContent = `${payload.submissions?.length || 0} soumission(s) chargée(s).`;
+          allSubmissions = payload.submissions || [];
+          searchInput.value = '';
+          updateStats(allSubmissions);
+          setControlsEnabled(true);
+          renderSubmissions(allSubmissions);
+          setStatus(`${allSubmissions.length} soumission${allSubmissions.length > 1 ? 's' : ''} chargée${allSubmissions.length > 1 ? 's' : ''}.`);
         } catch (error) {
-          list.innerHTML = '';
-          status.textContent = error.message || 'Impossible de charger les soumissions.';
+          allSubmissions = [];
+          visibleSubmissions = [];
+          updateStats([]);
+          renderEmpty('Chargement impossible.', error.message || 'Impossible de charger les soumissions.');
+          setStatus(error.message || 'Impossible de charger les soumissions.', true);
         } finally {
           loadButton.disabled = false;
+          setControlsEnabled(allSubmissions.length > 0);
         }
       };
 
       loadButton.addEventListener('click', loadSubmissions);
+      clearPasswordButton.addEventListener('click', () => {
+        passwordInput.value = '';
+        passwordInput.focus();
+        setStatus('Mot de passe effacé.');
+      });
       passwordInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-          loadSubmissions();
+        if (event.key === 'Enter') loadSubmissions();
+      });
+      searchInput.addEventListener('input', applySearch);
+      resetSearchButton.addEventListener('click', () => {
+        searchInput.value = '';
+        applySearch();
+        searchInput.focus();
+      });
+      exportCsvButton.addEventListener('click', exportCsv);
+      list.addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-copy-index]');
+        if (!button) return;
+        const submission = allSubmissions[Number(button.dataset.copyIndex)];
+        if (!submission) return;
+        try {
+          await copyText(buildStructuredMessage(submission, Number(button.dataset.copyIndex) + 1));
+          button.textContent = 'Brief copié';
+          setStatus('Brief copié dans le presse-papiers.');
+          window.setTimeout(() => {
+            button.textContent = 'Copier le brief';
+          }, 1600);
+        } catch (error) {
+          setStatus('Copie impossible depuis ce navigateur.', true);
         }
       });
     </script>
