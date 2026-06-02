@@ -52,13 +52,36 @@
       </section>
 
       <section class="workspace" aria-label="Formulaire et explication B2B">
-        <form class="idea-form" id="ideaForm" novalidate>
+        <form
+          class="idea-form"
+          id="ideaForm"
+          action="https://formsubmit.co/Wissem.sghaier.ws@gmail.com"
+          method="POST"
+          novalidate
+        >
+          <input type="hidden" name="_subject" value="Nouvelles idées SaaS B2B" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="source" value="saas-b2b-ideas-form" />
+
           <div class="form-header" id="ideas">
             <p class="eyebrow">Exercice</p>
             <h2>Inscris tes deux pistes.</h2>
             <p>
               Écris en une ou deux phrases : qui a le problème, ce qui bloque, et ce que le logiciel pourrait améliorer.
             </p>
+          </div>
+
+          <div class="field-group">
+            <label for="contactEmail">Email pour te recontacter</label>
+            <input
+              id="contactEmail"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="exemple@entreprise.com"
+            />
+            <p class="field-hint">Optionnel, mais utile si tu veux recevoir un retour sur tes idées.</p>
           </div>
 
           <div class="field-group">
@@ -87,7 +110,7 @@
             <p class="field-hint">Compare-la à la première : urgence, budget, accès aux clients, simplicité du MVP.</p>
           </div>
 
-          <button type="submit">Enregistrer localement</button>
+          <button type="submit">Envoyer mes idées</button>
           <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
         </form>
 

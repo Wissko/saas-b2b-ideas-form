@@ -237,10 +237,9 @@ label {
   letter-spacing: -0.01em;
 }
 
+input,
 textarea {
   width: 100%;
-  min-height: 10.5rem;
-  resize: vertical;
   border: 1px solid rgba(20, 19, 15, 0.18);
   border-radius: 1.2rem;
   padding: 1rem 1.05rem;
@@ -252,15 +251,27 @@ textarea {
   transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background 180ms ease;
 }
 
+input {
+  min-height: 3.45rem;
+}
+
+textarea {
+  min-height: 10.5rem;
+  resize: vertical;
+}
+
+input::placeholder,
 textarea::placeholder {
   color: rgba(117, 111, 99, 0.74);
   font-weight: 450;
 }
 
+input:hover,
 textarea:hover {
   border-color: rgba(143, 79, 42, 0.38);
 }
 
+input:focus,
 textarea:focus {
   border-color: var(--accent);
   background: #fffaf0;
@@ -268,6 +279,7 @@ textarea:focus {
   transform: translateY(-1px);
 }
 
+input.is-invalid,
 textarea.is-invalid {
   border-color: #9b2f24;
   box-shadow: 0 0 0 4px rgba(155, 47, 36, 0.12);
@@ -302,7 +314,14 @@ button:active {
   transform: translateY(0) scale(0.99);
 }
 
+button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
 button:focus-visible,
+input:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
   outline: 3px solid rgba(143, 79, 42, 0.36);

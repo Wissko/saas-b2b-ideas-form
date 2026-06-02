@@ -1,6 +1,8 @@
 const form = document.querySelector('#ideaForm');
 const feedback = document.querySelector('#feedback');
 const fields = [...document.querySelectorAll('textarea')];
+const contactEmail = document.querySelector('#contactEmail');
+const submitButton = form.querySelector('button[type="submit"]');
 const storageKey = 'saas-b2b-ideas';
 
 let savedIdeas = null;
@@ -15,6 +17,8 @@ if (savedIdeas) {
   fields.forEach((field) => {
     field.value = savedIdeas[field.name] || '';
   });
+
+  contactEmail.value = savedIdeas.email || '';
 }
 
 const setFeedback = (message, type = 'success') => {
@@ -22,7 +26,7 @@ const setFeedback = (message, type = 'success') => {
   feedback.classList.toggle('is-error', type === 'error');
 };
 
-fields.forEach((field) => {
+[...fields, contactEmail].forEach((field) => {
   field.addEventListener('input', () => {
     field.classList.remove('is-invalid');
     setFeedback('');
@@ -33,7 +37,15 @@ form.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const ideas = fields.map((field) => field.value.trim());
+  const email = contactEmail.value.trim();
   const invalidField = fields.find((field) => field.value.trim().length < 20);
+
+  if (email && !contactEmail.validity.valid) {
+    contactEmail.classList.add('is-invalid');
+    contactEmail.focus();
+    setFeedback('Vérifie le format de l’adresse email, ou laisse le champ vide.', 'error');
+    return;
+  }
 
   if (invalidField) {
     invalidField.classList.add('is-invalid');
@@ -47,9 +59,12 @@ form.addEventListener('submit', (event) => {
     JSON.stringify({
       ideaOne: ideas[0],
       ideaTwo: ideas[1],
+      email,
       savedAt: new Date().toISOString(),
     })
   );
 
-  setFeedback('Idées enregistrées localement. Compare maintenant l’urgence, le budget et l’accès aux premiers clients.');
+  submitButton.disabled = true;
+  setFeedback('Envoi en cours. Une copie locale a aussi été sauvegardée.');
+  form.submit();
 });
