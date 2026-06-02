@@ -3,55 +3,120 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Formulaire simple pour noter deux idées de SaaS B2B et comprendre pourquoi le B2B est souvent plus stratégique que le B2C." />
+    <meta
+      name="description"
+      content="Mini landing et formulaire statique pour cadrer deux idées de SaaS B2B et comprendre pourquoi vendre aux entreprises change la stratégie."
+    />
+    <meta property="og:title" content="Deux idées SaaS B2B" />
+    <meta
+      property="og:description"
+      content="Un exercice court pour formuler deux idées B2B, puis choisir celle qui résout le problème business le plus net."
+    />
     <title>Deux idées SaaS B2B</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,650..800,25&family=Instrument+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#ideas">Aller au formulaire</a>
+
     <main class="page-shell">
       <section class="hero" aria-labelledby="page-title">
-        <div class="eyebrow">SaaS B2B Strategy</div>
-        <h1 id="page-title">Note 2 idées de projet SaaS pour entreprises.</h1>
-        <p class="intro">
-          Le but est simple : trouver deux problèmes récurrents chez des professionnels, puis imaginer un outil logiciel qui leur fait gagner du temps, de l'argent ou de la visibilité.
-        </p>
-      </section>
+        <div class="hero__meta">
+          <span>Atelier SaaS B2B</span>
+          <span>Deux idées, une décision plus nette</span>
+        </div>
 
-      <section class="content-grid" aria-label="Formulaire et explication B2B">
-        <form class="idea-form" id="ideaForm">
-          <div class="form-header">
-            <span>Atelier rapide</span>
-            <strong>2 idées à clarifier</strong>
+        <div class="hero__grid">
+          <div class="hero__copy">
+            <p class="eyebrow">Cadrage rapide</p>
+            <h1 id="page-title">Formule deux idées de SaaS que des entreprises pourraient vraiment payer.</h1>
+            <p class="intro">
+              L’objectif n’est pas de trouver une idée brillante en théorie. C’est d’identifier deux problèmes répétitifs,
+              coûteux ou visibles chez des professionnels, puis de les écrire assez clairement pour comparer leur potentiel.
+            </p>
           </div>
 
-          <label for="ideaOne">
-            Idée SaaS B2B n°1
-            <textarea id="ideaOne" name="ideaOne" rows="5" required placeholder="Exemple : un outil qui aide les restaurants à relancer automatiquement leurs clients inactifs."></textarea>
-          </label>
+          <aside class="thesis-card" aria-label="Thèse B2B">
+            <span class="thesis-card__index">01</span>
+            <p>
+              En B2B, une bonne idée part rarement d’une envie. Elle part d’une friction qui ralentit une équipe,
+              fait perdre du chiffre d’affaires ou crée un risque opérationnel.
+            </p>
+          </aside>
+        </div>
+      </section>
 
-          <label for="ideaTwo">
-            Idée SaaS B2B n°2
-            <textarea id="ideaTwo" name="ideaTwo" rows="5" required placeholder="Exemple : une plateforme qui détecte les commerces sans site web et prépare une offre personnalisée."></textarea>
-          </label>
+      <section class="workspace" aria-label="Formulaire et explication B2B">
+        <form class="idea-form" id="ideaForm" novalidate>
+          <div class="form-header" id="ideas">
+            <p class="eyebrow">Exercice</p>
+            <h2>Inscris tes deux pistes.</h2>
+            <p>
+              Écris en une ou deux phrases : qui a le problème, ce qui bloque, et ce que le logiciel pourrait améliorer.
+            </p>
+          </div>
 
-          <button type="submit">Enregistrer mes idées</button>
+          <div class="field-group">
+            <label for="ideaOne">Idée SaaS B2B n°1</label>
+            <textarea
+              id="ideaOne"
+              name="ideaOne"
+              rows="6"
+              minlength="20"
+              required
+              placeholder="Exemple : un outil pour aider les cabinets comptables à repérer les dossiers clients incomplets avant la date limite."
+            ></textarea>
+            <p class="field-hint">Cherche un problème fréquent, mesurable, et assez pénible pour justifier un abonnement.</p>
+          </div>
+
+          <div class="field-group">
+            <label for="ideaTwo">Idée SaaS B2B n°2</label>
+            <textarea
+              id="ideaTwo"
+              name="ideaTwo"
+              rows="6"
+              minlength="20"
+              required
+              placeholder="Exemple : une plateforme qui détecte les commerces sans présence web solide et prépare une proposition commerciale ciblée."
+            ></textarea>
+            <p class="field-hint">Compare-la à la première : urgence, budget, accès aux clients, simplicité du MVP.</p>
+          </div>
+
+          <button type="submit">Enregistrer localement</button>
           <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
         </form>
 
-        <aside class="b2b-card">
-          <p class="kicker">Pourquoi viser le B2B ?</p>
-          <h2>Le B2B vend une solution à un problème mesurable.</h2>
-          <ul>
-            <li><strong>Budget plus clair :</strong> une entreprise paie si l'outil réduit un coût ou augmente son chiffre d'affaires.</li>
-            <li><strong>Douleur plus forte :</strong> les problèmes professionnels reviennent tous les jours, donc la valeur est plus facile à prouver.</li>
-            <li><strong>Meilleure rétention :</strong> si le SaaS entre dans un workflow, le client reste plus longtemps.</li>
-            <li><strong>Moins de volume nécessaire :</strong> quelques clients B2B peuvent générer plus qu'une grande audience B2C gratuite.</li>
-          </ul>
-          <p class="note">
-            Le B2C peut marcher, mais il demande souvent beaucoup d'audience, de branding et de viralité. En B2B, tu peux vendre plus tôt si tu résous un vrai problème business.
+        <aside class="b2b-panel">
+          <p class="eyebrow">Pourquoi B2B plutôt que B2C</p>
+          <h2>Le client paie quand le problème touche son activité.</h2>
+
+          <div class="argument-list">
+            <article>
+              <span>Budget</span>
+              <p>Une entreprise accepte de payer si l’outil réduit un coût, récupère du temps ou protège une opportunité commerciale.</p>
+            </article>
+            <article>
+              <span>Douleur</span>
+              <p>Les problèmes professionnels reviennent chaque semaine. La valeur se prouve avec des chiffres, pas seulement avec une préférence.</p>
+            </article>
+            <article>
+              <span>Rétention</span>
+              <p>Quand le SaaS entre dans un workflow réel, il devient plus difficile à remplacer qu’une application de confort.</p>
+            </article>
+            <article>
+              <span>Volume</span>
+              <p>Quelques clients B2B sérieux peuvent valoir plus qu’une grande audience B2C gratuite et difficile à convertir.</p>
+            </article>
+          </div>
+
+          <p class="panel-note">
+            Le B2C peut fonctionner, mais il demande souvent une distribution forte, une marque très mémorable et beaucoup de volume.
+            Le B2B permet de tester plus tôt : parler à des prospects, chiffrer la douleur, vendre une première version simple.
           </p>
         </aside>
       </section>
