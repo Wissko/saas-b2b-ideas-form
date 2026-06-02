@@ -164,9 +164,9 @@ form.addEventListener('submit', async (event) => {
 
   try {
     await sendSubmission(payload);
-    setFeedback('Idées envoyées. L’email contient le résumé, les deux idées et la prochaine étape.');
+    setFeedback('Idées enregistrées. Elles sont disponibles dans le panel admin.');
   } catch {
-    setFeedback('Service email indisponible ici. Ouverture d’un email pré-rempli pour ne pas perdre les infos.', 'error');
+    setFeedback('Stockage indisponible ici. Ouverture d’un email pré-rempli pour ne pas perdre les infos.', 'error');
     openMailFallback({ structuredMessage });
   } finally {
     submitButton.disabled = false;

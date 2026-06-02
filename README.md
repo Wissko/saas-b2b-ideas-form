@@ -23,17 +23,21 @@ Puis ouvrir `http://localhost:3000`.
 
 ## Réception des soumissions
 
-Le formulaire essaie d’abord d’envoyer les données via la route backend `/api/submit` avec Resend. Si l’API n’est pas disponible, il ouvre automatiquement un email pré-rempli en fallback vers `Wissem.sghaier.ws@gmail.com`, afin de ne pas perdre les informations.
+Le formulaire envoie les soumissions à la route backend `/api/submit`, qui les stocke directement dans GitHub dans `data/submissions.json`. Le panel `/admin.html` permet de les relire avec un mot de passe admin.
 
-Variables d’environnement à configurer en production pour l’envoi automatique :
+Si l’API n’est pas disponible, le site ouvre automatiquement un email pré-rempli vers `Wissem.sghaier.ws@gmail.com`, afin de ne pas perdre les informations.
+
+Variables d’environnement à configurer en production :
 
 ```bash
-RESEND_API_KEY=...
-RESEND_FROM="SaaS B2B Ideas <adresse@domaine-verifie.com>"
-SUBMISSION_TO_EMAIL="Wissem.sghaier.ws@gmail.com"
+GITHUB_TOKEN=...
+ADMIN_PASSWORD=...
+GITHUB_STORAGE_REPO="Wissko/saas-b2b-ideas-form"
+GITHUB_STORAGE_PATH="data/submissions.json"
+GITHUB_STORAGE_BRANCH="main"
 ```
 
-L’email contient :
+Chaque soumission stockée contient :
 
 - le contact éventuel
 - la date d’envoi

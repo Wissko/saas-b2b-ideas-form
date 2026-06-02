@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Idées SaaS B2B</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,650..800,25&family=Instrument+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .admin-shell {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: clamp(2rem, 5vw, 4.5rem) 0;
+      }
+
+      .admin-header {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1.2rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .admin-header h1 {
+        max-width: 11ch;
+        margin: 0;
+        font-size: clamp(3rem, 8vw, 6.8rem);
+      }
+
+      .admin-login,
+      .submission-card {
+        border: 1px solid var(--line);
+        border-radius: 1.6rem;
+        background: rgba(251, 247, 239, 0.94);
+        box-shadow: var(--shadow);
+      }
+
+      .admin-login {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.9rem;
+        align-items: end;
+        padding: 1rem;
+        margin-bottom: 1.3rem;
+      }
+
+      .admin-login label {
+        margin: 0;
+      }
+
+      .admin-login button {
+        width: auto;
+        min-height: 3.45rem;
+        padding-inline: 1.5rem;
+      }
+
+      .admin-status {
+        min-height: 1.4rem;
+        color: var(--muted);
+        font-weight: 650;
+      }
+
+      .submission-list {
+        display: grid;
+        gap: 1rem;
+        margin-top: 1.2rem;
+      }
+
+      .submission-card {
+        padding: clamp(1.1rem, 3vw, 1.6rem);
+      }
+
+      .submission-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-bottom: 1rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 650;
+      }
+
+      .submission-card h2 {
+        margin-bottom: 0.75rem;
+        font-size: clamp(1.7rem, 4vw, 2.6rem);
+      }
+
+      .submission-card h3 {
+        margin: 1.1rem 0 0.45rem;
+        color: var(--accent);
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .submission-card p {
+        margin-bottom: 0;
+        color: var(--ink-soft);
+        line-height: 1.58;
+      }
+
+      .empty-state {
+        padding: 1.2rem;
+        border: 1px dashed var(--line-strong);
+        border-radius: 1.2rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 620px) {
+        .admin-login {
+          grid-template-columns: 1fr;
+        }
+
+        .admin-login button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="admin-shell">
+      <header class="admin-header">
+        <p class="eyebrow">Panel admin</p>
+        <h1>Idées reçues.</h1>
+        <p class="intro">Connecte-toi avec le mot de passe admin pour lire les soumissions stockées dans GitHub.</p>
+      </header>
+
+      <section class="admin-login" aria-label="Connexion admin">
+        <label for="adminPassword">
+          Mot de passe admin
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Mot de passe" />
+        </label>
+        <button id="loadSubmissions" type="button">Afficher</button>
+      </section>
+
+      <p class="admin-status" id="adminStatus" role="status" aria-live="polite"></p>
+      <section class="submission-list" id="submissionList" aria-label="Soumissions"></section>
+    </main>
+
+    <script>
+      const passwordInput = document.querySelector('#adminPassword');
+      const loadButton = document.querySelector('#loadSubmissions');
+      const status = document.querySelector('#adminStatus');
+      const list = document.querySelector('#submissionList');
+
+      const escapeHtml = (value = '') =>
+        String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+
+      const renderSubmissions = (submissions) => {
+        if (!submissions.length) {
+          list.innerHTML = '<div class="empty-state">Aucune soumission pour le moment.</div>';
+          return;
+        }
+
+        list.innerHTML = submissions
+          .map(
+            (submission, index) => `
+              <article class="submission-card">
+                <div class="submission-meta">
+                  <span>#${submissions.length - index}</span>
+                  <span>${escapeHtml(submission.submittedAt || submission.createdAt || '')}</span>
+                  <span>${escapeHtml(submission.email || 'Email non renseigné')}</span>
+                </div>
+                <h2>Soumission SaaS B2B</h2>
+                <h3>Résumé</h3>
+                <p>${escapeHtml(submission.summary || 'Résumé non disponible')}</p>
+                <h3>Idée n°1</h3>
+                <p>${escapeHtml(submission.ideaOne)}</p>
+                <h3>Idée n°2</h3>
+                <p>${escapeHtml(submission.ideaTwo)}</p>
+                <h3>Prochaine étape</h3>
+                <p>${escapeHtml(submission.nextStep || 'Non renseignée')}</p>
+              </article>
+            `
+          )
+          .join('');
+      };
+
+      const loadSubmissions = async () => {
+        const password = passwordInput.value.trim();
+
+        if (!password) {
+          status.textContent = 'Entre le mot de passe admin.';
+          passwordInput.focus();
+          return;
+        }
+
+        loadButton.disabled = true;
+        status.textContent = 'Chargement des soumissions...';
+
+        try {
+          const response = await fetch('/api/submit', {
+            headers: { 'x-admin-password': password },
+          });
+          const payload = await response.json();
+
+          if (!response.ok) {
+            throw new Error(payload.error || 'Accès refusé');
+          }
+
+          renderSubmissions(payload.submissions || []);
+          status.textContent = `${payload.submissions?.length || 0} soumission(s) chargée(s).`;
+        } catch (error) {
+          list.innerHTML = '';
+          status.textContent = error.message || 'Impossible de charger les soumissions.';
+        } finally {
+          loadButton.disabled = false;
+        }
+      };
+
+      loadButton.addEventListener('click', loadSubmissions);
+      passwordInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          loadSubmissions();
+        }
+      });
+    </script>
+  </body>
+</html>
